@@ -1,9 +1,29 @@
-# Calculateur de rentabilité d'une formation
+# Générateur de programme de formation
 
-Outil gratuit HTML/CSS/JavaScript, sans dépendance ni serveur. Calcule le chiffre d'affaires, les coûts, la marge et le seuil de rentabilité d'une session de formation.
+Outil gratuit et open source pour rédiger en quelques minutes un **programme de formation structuré et imprimable** : objectifs pédagogiques, public visé, prérequis, durée, modalités, contenu, méthodes, évaluation, accessibilité.
 
-## Utilisation
+👉 **Utiliser l'outil en ligne :** https://https://github.com/citicasarl/generateur-programme-formation/
 
-Ouvrir `index.html` dans un navigateur, ou publier ce dépôt sur GitHub Pages via **Settings > Pages > Deploy from a branch > main / (root)**.
+## Fonctionnalités
 
-Proposé par [Répertoire Formations](https://www.repertoire-formations.fr/).
+- Aperçu du programme en temps réel
+- **Points de vigilance Qualiopi (indicateur 1)** : éléments obligatoires manquants, objectifs formulés avec un verbe peu observable (« connaître », « comprendre »…), cohérence entre la durée des séquences et la durée totale
+- Impression / export PDF au format A4
+- Téléchargement du programme en HTML autonome
+- Enregistrement et réouverture au format `.json` (pour réutiliser un programme comme modèle)
+- Sauvegarde automatique dans le navigateur
+- Exemple complet pour démarrer
+
+Aucune donnée n'est envoyée sur un serveur : tout reste dans votre navigateur.
+
+## Installation
+
+Un seul fichier, sans dépendance : téléchargez `index.html` et ouvrez-le dans votre navigateur, ou intégrez-le sur votre site.
+
+## Vous êtes organisme de formation ou formateur ?
+
+Référencez gratuitement votre organisme sur **[Répertoire Formations](https://www.repertoire-formations.fr/pages/membres/inscription.php?utm_source=github&utm_medium=readme&utm_campaign=generateur-programme)** : fiche organisme, référentiel de compétences et outils pour les professionnels de la formation.
+
+## Licence
+
+MIT — libre d'utilisation, de modification et de redistribution.

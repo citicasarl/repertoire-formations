@@ -1,6 +1,566 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Calculez gratuitement la rentabilité d'une session de formation : chiffre d'affaires, coûts, marge et seuil de rentabilité."><title>Calculateur de rentabilité d'une formation | Répertoire Formations</title><style>
-:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#183047;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(120deg,#113b65,#166f92);color:white;padding:36px 18px}header>div,main,footer{max-width:1050px;margin:auto}h1{font-size:clamp(1.65rem,4vw,2.5rem);margin:12px 0}header p{max-width:680px;line-height:1.5}.brand{font-weight:700;letter-spacing:.04em}main{padding:26px 16px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid #dce5ed;border-radius:16px;padding:23px;box-shadow:0 4px 18px #17344b0b}h2{font-size:1.2rem;margin:0 0 20px}.field{margin-bottom:16px}label{display:block;font-size:.91rem;font-weight:650;margin-bottom:6px}input{width:100%;border:1px solid #c7d5e0;border-radius:9px;padding:11px;font-size:1rem}input:focus{outline:2px solid #1780a3;outline-offset:1px}.help{font-size:.78rem;color:#617586;margin-top:4px}.results{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat{background:#f1f6fa;border-radius:12px;padding:16px}.stat strong{display:block;font-size:1.35rem;margin-top:7px}.stat small{font-size:.83rem;color:#536c7d}.positive{color:#087a52}.negative{color:#bd3434}.wide{grid-column:1/-1}.notice{background:#e9f6f2;border-left:4px solid #15865e;padding:14px;border-radius:8px;line-height:1.5}.notice.warn{background:#fff3eb;border-color:#c46c2b}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}button,.cta{border:0;background:#126b90;color:#fff;padding:12px 17px;border-radius:9px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;font-size:.94rem}button.secondary{background:#e9f0f5;color:#20435b}.promo{margin-top:22px;background:#fff;border:1px solid #d7e5ec;border-radius:16px;padding:24px}.promo p{line-height:1.55}footer{padding:10px 16px 35px;color:#607385;font-size:.85rem}@media(max-width:740px){.layout{grid-template-columns:1fr}.panel{padding:18px}}@media print{header{background:white;color:#183047;padding:10px 0}main{padding:0}.actions,.promo,footer{display:none}.layout{display:block}.panel{box-shadow:none;margin:0 0 15px;break-inside:avoid}input{border:0;padding:0}}
-</style></head><body><header><div><div class="brand">RÉPERTOIRE FORMATIONS · OUTILS GRATUITS</div><h1>Calculateur de rentabilité d'une formation</h1><p>Estimez immédiatement votre chiffre d'affaires, votre marge et le nombre de participants nécessaires pour rentabiliser une session de formation.</p></div></header><main><div class="layout"><section class="panel"><h2>Paramètres de la session</h2><div class="field"><label for="prix">Prix par participant (€ HT)</label><input id="prix" type="number" min="0" step="0.01" value="350"></div><div class="field"><label for="participants">Nombre de participants prévus</label><input id="participants" type="number" min="0" step="1" value="10"></div><div class="field"><label for="heures">Durée de formation (heures)</label><input id="heures" type="number" min="0" step="0.5" value="14"></div><div class="field"><label for="coutHoraire">Coût horaire du formateur (€)</label><input id="coutHoraire" type="number" min="0" step="0.01" value="65"><div class="help">Incluez votre propre temps de travail si vous animez la formation.</div></div><div class="field"><label for="fixes">Autres coûts fixes de session (€)</label><input id="fixes" type="number" min="0" step="0.01" value="250"><div class="help">Location, déplacements, préparation, publicité…</div></div><div class="field"><label for="variable">Coût variable par participant (€)</label><input id="variable" type="number" min="0" step="0.01" value="20"><div class="help">Supports, repas, licences, matériel…</div></div></section><section class="panel"><h2>Résultats estimés</h2><div class="results"><div class="stat"><small>Chiffre d'affaires HT</small><strong id="ca">—</strong></div><div class="stat"><small>Coûts totaux</small><strong id="couts">—</strong></div><div class="stat"><small>Marge de session</small><strong id="marge">—</strong></div><div class="stat"><small>Taux de marge sur CA</small><strong id="taux">—</strong></div><div class="stat wide"><small>Seuil de rentabilité</small><strong id="seuil">—</strong><div class="help" id="seuilDesc"></div></div><div class="wide notice" id="message" role="status" aria-live="polite"></div></div><div class="actions"><button type="button" onclick="window.print()">Imprimer les résultats</button><button type="button" class="secondary" id="reset">Réinitialiser</button></div><p class="help">Calcul indicatif hors TVA, impôts et charges non renseignées. Marge = chiffre d'affaires − coûts. Le taux est calculé sur le chiffre d'affaires.</p></section></div><aside class="promo"><h2>Développez la visibilité de vos formations</h2><p>Répertoire Formations accompagne les organismes de formation et les formateurs indépendants dans la présentation et le référencement de leurs activités.</p><a class="cta" href="https://www.repertoire-formations.fr/" target="_blank" rel="noopener noreferrer">Découvrir Répertoire Formations ↗</a></aside></main><footer>Outil gratuit proposé par Répertoire Formations. Les données saisies restent dans votre navigateur et ne sont pas transmises à un serveur.</footer><script>
-const ids=['prix','participants','heures','coutHoraire','fixes','variable'];const euro=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:2});const percent=new Intl.NumberFormat('fr-FR',{style:'percent',maximumFractionDigits:1});function calculate(){const v=Object.fromEntries(ids.map(id=>[id,Math.max(0,Number(document.getElementById(id).value)||0)]));const n=Math.floor(v.participants),ca=v.prix*n,fixe=v.heures*v.coutHoraire+v.fixes,couts=fixe+v.variable*n,marge=ca-couts,contribution=v.prix-v.variable;let seuil,desc;if(contribution>0){seuil=Math.ceil(fixe/contribution);desc='Participants minimum pour couvrir les coûts estimés.'}else if(fixe===0&&contribution===0){seuil=0;desc='Recettes et coûts variables identiques : aucune marge générée.'}else{seuil=null;desc='Le prix par participant ne couvre pas son coût variable : seuil inatteignable.'}const put=(id,value)=>document.getElementById(id).textContent=value;put('ca',euro.format(ca));put('couts',euro.format(couts));put('marge',euro.format(marge));put('taux',ca>0?percent.format(marge/ca):'Non calculable');put('seuil',seuil===null?'Inatteignable':seuil+' participant'+(seuil>1?'s':''));put('seuilDesc',desc);const m=document.getElementById('message');m.classList.toggle('warn',marge<0);m.textContent=marge>=0?'Cette session couvre les coûts renseignés, avec une marge estimée de '+euro.format(marge)+'.':'Cette session présente une perte estimée de '+euro.format(-marge)+'. Ajustez le tarif, les effectifs ou les coûts.';document.getElementById('marge').className=marge>=0?'positive':'negative'}ids.forEach(id=>document.getElementById(id).addEventListener('input',calculate));document.getElementById('reset').addEventListener('click',()=>{const defaults=[350,10,14,65,250,20];ids.forEach((id,i)=>document.getElementById(id).value=defaults[i]);calculate()});calculate();
-</script></body></html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur de programme de formation gratuit | Répertoire Formations</title>
+<meta name="description" content="Créez gratuitement un programme de formation structuré et imprimable : objectifs pédagogiques, public, prérequis, durée, modalités, évaluation. Points de vigilance Qualiopi (indicateur 1) inclus.">
+<meta property="og:title" content="Générateur de programme de formation gratuit">
+<meta property="og:description" content="Objectifs, public, prérequis, durée, modalités, évaluation : générez un programme de formation imprimable en quelques minutes.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --primary:#1e5aa8; --primary-dark:#163f78; --accent:#f0a020;
+    --bg:#f3f5f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+    --border:#d8dee8; --warn-bg:#fff7e6; --warn:#9a5b00; --ok:#1b7f4b; --danger:#b42318;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+  a{color:var(--primary)}
+  .topbar{background:var(--primary);color:#fff;padding:14px 16px}
+  .topbar .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar h1{font-size:1.25rem;margin:0;font-weight:700}
+  .topbar p{margin:0;opacity:.85;font-size:.9rem}
+  .topbar .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:240px}
+  .topbar a.top-link{color:#fff;font-weight:600;font-size:.9rem;text-decoration:none;border:1px solid rgba(255,255,255,.5);padding:6px 12px;border-radius:999px}
+  .wrap{max-width:1400px;margin:0 auto}
+  .toolbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);padding:10px 16px}
+  .toolbar .wrap{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;color:var(--text);padding:8px 12px;border-radius:8px;font-size:.9rem;cursor:pointer;font-family:inherit}
+  .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.primary:hover{background:var(--primary-dark);color:#fff}
+  .btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+  .btn svg{width:16px;height:16px}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:20px 16px}
+  @media (max-width:1000px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+  .card h2{font-size:1.05rem;margin:0 0 12px;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+  .card h2 .num{background:var(--primary);color:#fff;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem}
+  label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 4px}
+  label .opt{font-weight:400;color:var(--muted)}
+  input[type=text],input[type=number],input[type=email],input[type=date],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font:inherit;background:#fff;color:var(--text)}
+  input:focus,select:focus,textarea:focus{outline:2px solid rgba(30,90,168,.25);border-color:var(--primary)}
+  textarea{resize:vertical}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 12px}
+  @media (max-width:560px){.grid2,.grid3{grid-template-columns:1fr}}
+  .checks{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}
+  .checks label{font-weight:400;margin:0;display:flex;align-items:center;gap:6px;font-size:.9rem}
+  .help{font-size:.8rem;color:var(--muted);margin:4px 0 0}
+  .row-item{display:grid;grid-template-columns:1fr auto;gap:6px;margin-bottom:8px}
+  .row-item .hint{grid-column:1/-1;font-size:.78rem;color:var(--warn);margin-top:-4px}
+  .row-item .hint:empty{display:none}
+  .icon-btn{border:1px solid var(--border);background:#fff;border-radius:7px;width:36px;cursor:pointer;font-size:1.1rem;color:var(--muted)}
+  .icon-btn:hover{color:var(--danger);border-color:var(--danger)}
+  .seq{border:1px dashed var(--border);border-radius:8px;padding:10px;margin-bottom:10px;background:#fafbfd}
+  .seq-head{display:grid;grid-template-columns:1fr 120px auto;gap:6px;margin-bottom:6px}
+  @media (max-width:560px){.seq-head{grid-template-columns:1fr auto}.seq-head .seq-duree{grid-column:1/-1;grid-row:2}}
+  .add{margin-top:4px}
+  .checklist{background:var(--warn-bg);border:1px solid #f2d9a6;border-radius:var(--radius);padding:14px 16px;margin-bottom:16px}
+  .checklist h2{font-size:.95rem;margin:0 0 8px;color:var(--warn)}
+  .checklist ul{margin:0;padding-left:18px;font-size:.88rem}
+  .checklist li.ok{color:var(--ok);list-style:"✓  "}
+  .checklist li.ko{color:var(--warn);list-style:"!  "}
+  .preview-col{position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow:auto;border-radius:var(--radius)}
+  @media (max-width:1000px){.preview-col{position:static;max-height:none}}
+  .cta{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--radius);padding:22px;margin:0 16px 24px}
+  .cta .wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .cta h2{margin:0 0 6px;font-size:1.2rem}
+  .cta p{margin:0;opacity:.9}
+  .cta .txt{flex:1;min-width:260px}
+  .cta a.btn-cta{background:var(--accent);color:#1f2937;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:8px;display:inline-block}
+  .cta a.btn-sec{color:#fff;font-size:.9rem;display:inline-block;margin-top:8px}
+  footer.site{text-align:center;font-size:.85rem;color:var(--muted);padding:0 16px 30px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+</style>
+
+<!-- Styles du document généré (réutilisés pour l'export HTML) -->
+<style id="doc-css">
+  .doc{background:#fff;color:#1f2937;font-family:Georgia,"Times New Roman",serif;padding:36px 40px;border:1px solid #d8dee8;border-radius:10px;font-size:14px;line-height:1.55}
+  .doc .d-top{display:flex;justify-content:space-between;gap:16px;font-family:system-ui,Arial,sans-serif;font-size:12px;color:#6b7280;border-bottom:2px solid #1e5aa8;padding-bottom:10px;margin-bottom:18px;flex-wrap:wrap}
+  .doc .d-top strong{color:#1f2937;font-size:13px}
+  .doc h1{font-family:system-ui,Arial,sans-serif;font-size:24px;color:#163f78;margin:0 0 4px;line-height:1.25}
+  .doc .d-accroche{font-style:italic;color:#4b5563;margin:0 0 16px}
+  .doc .d-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 22px;font-family:system-ui,Arial,sans-serif}
+  .doc .d-meta div{background:#f3f6fb;border-left:3px solid #1e5aa8;padding:7px 10px;font-size:12.5px}
+  .doc .d-meta span{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#6b7280}
+  .doc .d-block{margin-bottom:16px;break-inside:avoid}
+  .doc h3{font-family:system-ui,Arial,sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:#1e5aa8;border-bottom:1px solid #d8dee8;padding-bottom:4px;margin:0 0 8px}
+  .doc p{margin:0 0 6px}
+  .doc ul{margin:0 0 6px;padding-left:20px}
+  .doc li{margin-bottom:3px}
+  .doc .d-seq{margin-bottom:10px;break-inside:avoid}
+  .doc .d-seq-title{font-weight:700;font-family:system-ui,Arial,sans-serif;font-size:13.5px;display:flex;justify-content:space-between;gap:10px}
+  .doc .d-seq-title em{font-weight:400;color:#6b7280;font-style:normal;white-space:nowrap}
+  .doc .d-empty{color:#9ca3af;font-style:italic;text-align:center;padding:60px 0;font-family:system-ui,Arial,sans-serif}
+  .doc .d-foot{margin-top:24px;padding-top:10px;border-top:1px solid #d8dee8;font-family:system-ui,Arial,sans-serif;font-size:11px;color:#6b7280;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .doc .d-foot a{color:#6b7280}
+  @media (max-width:560px){.doc{padding:20px 16px}.doc .d-meta{grid-template-columns:1fr 1fr}}
+  @media print{
+    @page{size:A4;margin:14mm}
+    .doc{border:none;border-radius:0;padding:0;font-size:12pt}
+    .doc a{text-decoration:none}
+  }
+</style>
+<style>
+  @media print{
+    body{background:#fff}
+    .no-print{display:none !important}
+    .layout{display:block;padding:0}
+    .preview-col{position:static;max-height:none;overflow:visible}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg>
+      <div>
+        <h1>Générateur de programme de formation</h1>
+        <p>Gratuit, sans inscription, vos données restent dans votre navigateur.</p>
+      </div>
+    </div>
+    <a class="top-link" href="https://www.repertoire-formations.fr/pages/repertoire-formations/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=generateur-programme" target="_blank" rel="noopener">Répertoire Formations ↗</a>
+  </div>
+</header>
+
+<nav class="toolbar no-print">
+  <div class="wrap">
+    <button class="btn primary" type="button" id="btnPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimer / PDF</button>
+    <button class="btn" type="button" id="btnHtml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Télécharger HTML</button>
+    <button class="btn" type="button" id="btnSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>Enregistrer (.json)</button>
+    <button class="btn" type="button" id="btnOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Ouvrir…</button>
+    <input type="file" id="fileOpen" accept="application/json,.json" hidden>
+    <button class="btn" type="button" id="btnExample">Charger un exemple</button>
+    <button class="btn danger" type="button" id="btnReset">Tout effacer</button>
+  </div>
+</nav>
+
+<main class="layout wrap">
+  <!-- ============ FORMULAIRE ============ -->
+  <form id="form" class="no-print" autocomplete="off" onsubmit="return false">
+
+    <div class="card">
+      <h2><span class="num">1</span>Identification</h2>
+      <label for="titre">Intitulé de la formation *</label>
+      <input type="text" id="titre" name="titre" placeholder="Ex. : Concevoir et animer une formation à distance">
+      <label for="accroche">Accroche <span class="opt">(facultatif)</span></label>
+      <input type="text" id="accroche" name="accroche" placeholder="Une phrase qui résume le bénéfice pour le stagiaire">
+      <div class="grid2">
+        <div><label for="organisme">Organisme de formation</label><input type="text" id="organisme" name="organisme"></div>
+        <div><label for="nda">N° de déclaration d'activité <span class="opt">(NDA)</span></label><input type="text" id="nda" name="nda" placeholder="11 chiffres"></div>
+        <div><label for="reference">Référence interne</label><input type="text" id="reference" name="reference" placeholder="Ex. : FOR-2026-012"></div>
+        <div><label for="maj">Date de mise à jour</label><input type="date" id="maj" name="maj"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>Public et prérequis</h2>
+      <label for="public">Public visé *</label>
+      <textarea id="public" name="public" rows="2" placeholder="Ex. : Formateurs, consultants, responsables pédagogiques…"></textarea>
+      <label for="prerequis">Prérequis *</label>
+      <textarea id="prerequis" name="prerequis" rows="2" placeholder="Ex. : Aucun / Maîtrise des outils bureautiques…"></textarea>
+      <div class="checks"><label><input type="checkbox" name="positionnement" value="1"> Un questionnaire de positionnement est proposé avant l'entrée en formation</label></div>
+      <div class="grid2">
+        <div><label for="partMin">Participants minimum</label><input type="number" min="1" id="partMin" name="partMin"></div>
+        <div><label for="partMax">Participants maximum</label><input type="number" min="1" id="partMax" name="partMax"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>Objectifs pédagogiques *</h2>
+      <p class="help">À l'issue de la formation, le stagiaire sera capable de… Utilisez un verbe d'action observable (identifier, rédiger, appliquer, concevoir…).</p>
+      <div id="objectifs"></div>
+      <button type="button" class="btn add" id="addObj">+ Ajouter un objectif</button>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>Durée, modalités et accès</h2>
+      <div class="grid3">
+        <div><label for="heures">Durée (heures) *</label><input type="number" step="0.5" min="0" id="heures" name="heures"></div>
+        <div><label for="jours">Jours</label><input type="number" step="0.5" min="0" id="jours" name="jours"></div>
+        <div><label for="modalite">Modalité *</label>
+          <select id="modalite" name="modalite">
+            <option value="">—</option><option>Présentiel</option><option>Distanciel (classe virtuelle)</option><option>E-learning</option><option>Mixte (blended)</option>
+          </select></div>
+      </div>
+      <label>Format</label>
+      <div class="checks">
+        <label><input type="checkbox" name="format" value="Inter-entreprises"> Inter-entreprises</label>
+        <label><input type="checkbox" name="format" value="Intra-entreprise"> Intra-entreprise</label>
+        <label><input type="checkbox" name="format" value="Individuel"> Individuel</label>
+      </div>
+      <div class="grid2">
+        <div><label for="lieu">Lieu</label><input type="text" id="lieu" name="lieu" placeholder="Ville, adresse ou « À distance »"></div>
+        <div><label for="tarif">Tarif</label><input type="text" id="tarif" name="tarif" placeholder="Ex. : 890 € HT / personne"></div>
+      </div>
+      <label for="delai">Délai d'accès *</label>
+      <input type="text" id="delai" name="delai" placeholder="Ex. : Inscription jusqu'à 15 jours avant le début de la session">
+    </div>
+
+    <div class="card">
+      <h2><span class="num">5</span>Contenu (séquences)</h2>
+      <p class="help">Un point de contenu par ligne. La somme des durées est comparée à la durée totale.</p>
+      <div id="sequences"></div>
+      <button type="button" class="btn add" id="addSeq">+ Ajouter une séquence</button>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">6</span>Méthodes et moyens</h2>
+      <label>Méthodes pédagogiques</label>
+      <div class="checks">
+        <label><input type="checkbox" name="methodes" value="Apports théoriques"> Apports théoriques</label>
+        <label><input type="checkbox" name="methodes" value="Exercices pratiques"> Exercices pratiques</label>
+        <label><input type="checkbox" name="methodes" value="Études de cas"> Études de cas</label>
+        <label><input type="checkbox" name="methodes" value="Mises en situation"> Mises en situation</label>
+        <label><input type="checkbox" name="methodes" value="Travaux en sous-groupes"> Travaux en sous-groupes</label>
+        <label><input type="checkbox" name="methodes" value="Échanges d'expériences"> Échanges d'expériences</label>
+      </div>
+      <label for="moyens">Moyens techniques et supports</label>
+      <textarea id="moyens" name="moyens" rows="2" placeholder="Ex. : Salle équipée, vidéoprojecteur, support remis à chaque stagiaire…"></textarea>
+      <label for="encadrement">Encadrement <span class="opt">(profil du formateur)</span></label>
+      <textarea id="encadrement" name="encadrement" rows="2" placeholder="Ex. : Formateur consultant, 15 ans d'expérience en ingénierie pédagogique"></textarea>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">7</span>Évaluation et sanction</h2>
+      <label>Modalités d'évaluation *</label>
+      <div class="checks">
+        <label><input type="checkbox" name="evaluation" value="Évaluation des acquis en amont (positionnement)"> Positionnement en amont</label>
+        <label><input type="checkbox" name="evaluation" value="Évaluation des acquis en cours de formation (exercices, quiz)"> En cours de formation</label>
+        <label><input type="checkbox" name="evaluation" value="Évaluation des acquis en fin de formation (QCM, mise en situation)"> En fin de formation</label>
+        <label><input type="checkbox" name="evaluation" value="Questionnaire de satisfaction à chaud"> Satisfaction à chaud</label>
+        <label><input type="checkbox" name="evaluation" value="Évaluation à froid (quelques semaines après)"> Évaluation à froid</label>
+      </div>
+      <label for="evalDetail">Précisions <span class="opt">(facultatif)</span></label>
+      <textarea id="evalDetail" name="evalDetail" rows="2"></textarea>
+      <label for="sanction">Sanction de la formation</label>
+      <select id="sanction" name="sanction">
+        <option value="">—</option>
+        <option>Attestation de fin de formation</option>
+        <option>Certificat de réalisation</option>
+        <option>Attestation + Open Badge numérique</option>
+        <option>Certification (RNCP / Répertoire spécifique)</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">8</span>Accessibilité et contact</h2>
+      <label for="accessibilite">Accessibilité aux personnes en situation de handicap *</label>
+      <textarea id="accessibilite" name="accessibilite" rows="2">Formation accessible aux personnes en situation de handicap. Contactez notre référent handicap pour étudier ensemble les adaptations nécessaires.</textarea>
+      <div class="grid2">
+        <div><label for="referent">Référent handicap</label><input type="text" id="referent" name="referent" placeholder="Nom, e-mail"></div>
+        <div><label for="contact">Contact / inscription</label><input type="text" id="contact" name="contact" placeholder="E-mail, téléphone"></div>
+      </div>
+      <div class="checks" style="margin-top:12px">
+        <label><input type="checkbox" name="credit" value="1" checked> Mentionner le générateur en pied de page</label>
+      </div>
+    </div>
+  </form>
+
+  <!-- ============ APERÇU ============ -->
+  <div class="preview-col">
+    <div class="checklist no-print" id="checklist"></div>
+    <article id="preview" class="doc"></article>
+  </div>
+</main>
+
+<section class="cta no-print">
+  <div class="wrap">
+    <div class="txt">
+      <h2>Vous êtes organisme de formation ou formateur ?</h2>
+      <p>Référencez gratuitement votre organisme sur Répertoire Formations, gérez votre fiche et accédez au référentiel de compétences.</p>
+    </div>
+    <div>
+      <a class="btn-cta" href="https://www.repertoire-formations.fr/pages/membres/inscription.php?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=generateur-programme" target="_blank" rel="noopener">Créer mon compte gratuit</a><br>
+      <a class="btn-sec" href="https://www.repertoire-formations.fr/pages/repertoire-formations/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=generateur-programme" target="_blank" rel="noopener">Consulter le répertoire →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site no-print">
+  Outil libre proposé par <a href="https://www.repertoire-formations.fr/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=generateur-programme" target="_blank" rel="noopener">Répertoire Formations</a> — aucune donnée n'est envoyée : tout reste dans votre navigateur.
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+  const STORE = 'rf-generateur-programme-v1';
+  const SITE = 'https://www.repertoire-formations.fr/?utm_source=github&utm_medium=programme-imprime&utm_campaign=generateur-programme';
+
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const lines = s => String(s || '').split('\n').map(x => x.trim()).filter(Boolean);
+
+  /* ---------- Listes dynamiques ---------- */
+  function addObjectif(val=''){
+    const row = document.createElement('div');
+    row.className = 'row-item';
+    row.innerHTML = '<input type="text" class="obj" placeholder="Ex. : Rédiger des objectifs pédagogiques opérationnels" value="'+esc(val)+'">'
+      + '<button type="button" class="icon-btn" data-del title="Supprimer" aria-label="Supprimer">×</button><small class="hint"></small>';
+    $('#objectifs').append(row);
+    return row;
+  }
+  function addSequence(s={}){
+    const box = document.createElement('div');
+    box.className = 'seq';
+    box.innerHTML = '<div class="seq-head">'
+      + '<input type="text" class="seq-titre" placeholder="Titre de la séquence" value="'+esc(s.titre)+'">'
+      + '<input type="text" class="seq-duree" placeholder="Durée (ex. 3h30)" value="'+esc(s.duree)+'">'
+      + '<button type="button" class="icon-btn" data-del title="Supprimer" aria-label="Supprimer">×</button></div>'
+      + '<textarea class="seq-contenu" rows="3" placeholder="Un point de contenu par ligne">'+esc(s.contenu)+'</textarea>';
+    $('#sequences').append(box);
+    return box;
+  }
+
+  /* ---------- Lecture / écriture du formulaire ---------- */
+  function collect(){
+    const data = {};
+    $$('#form [name]').forEach(el => {
+      if (el.type === 'checkbox') {
+        if (!data[el.name]) data[el.name] = [];
+        if (el.checked) data[el.name].push(el.value);
+      } else data[el.name] = el.value.trim();
+    });
+    data.objectifs = $$('.obj').map(i => i.value.trim()).filter(Boolean);
+    data.sequences = $$('.seq').map(s => ({
+      titre: $('.seq-titre', s).value.trim(),
+      duree: $('.seq-duree', s).value.trim(),
+      contenu: $('.seq-contenu', s).value
+    })).filter(s => s.titre || s.contenu.trim());
+    return data;
+  }
+  function fill(data){
+    $('#form').reset();
+    $$('#form [name]').forEach(el => {
+      const v = data[el.name];
+      if (v === undefined) return;
+      if (el.type === 'checkbox') el.checked = Array.isArray(v) && v.includes(el.value);
+      else el.value = v;
+    });
+    $('#objectifs').innerHTML = '';
+    (data.objectifs && data.objectifs.length ? data.objectifs : ['']).forEach(addObjectif);
+    $('#sequences').innerHTML = '';
+    (data.sequences && data.sequences.length ? data.sequences : [{}]).forEach(addSequence);
+    update();
+  }
+
+  /* ---------- Outils ---------- */
+  function parseH(s){
+    s = String(s || '').toLowerCase().replace(',', '.');
+    let m = s.match(/(\d+(?:\.\d+)?)\s*h\s*(\d+)?/);
+    if (m) return +m[1] + (m[2] ? +m[2] / 60 : 0);
+    m = s.match(/(\d+)\s*min/);
+    if (m) return +m[1] / 60;
+    m = s.match(/^\s*(\d+(?:\.\d+)?)\s*$/);
+    return m ? +m[1] : 0;
+  }
+  const fmtH = h => { const H = Math.floor(h), M = Math.round((h - H) * 60); return M ? H + 'h' + String(M).padStart(2,'0') : H + 'h'; };
+  const fmtDate = iso => { if(!iso) return ''; const d = new Date(iso + 'T00:00:00'); return isNaN(d) ? iso : d.toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'}); };
+  const slug = s => (s || 'programme-formation').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'programme-formation';
+  const VAGUE = /^(conna[iî]tre|comprendre|savoir|ma[iî]triser|appr[ée]hender|sensibiliser|d[ée]couvrir|s'approprier|[êe]tre capable)\b/i;
+
+  /* ---------- Rendu du programme ---------- */
+  const block = (title, html) => html ? '<section class="d-block"><h3>'+title+'</h3>'+html+'</section>' : '';
+  const ul = arr => arr.length ? '<ul>'+arr.map(x => '<li>'+esc(x)+'</li>').join('')+'</ul>' : '';
+  const para = s => lines(s).map(l => '<p>'+esc(l)+'</p>').join('');
+
+  function render(d){
+    if (!d.titre && !d.objectifs.length && !d.sequences.length) {
+      return '<div class="d-empty">Remplissez le formulaire : votre programme se construit ici en temps réel.</div>';
+    }
+    const duree = [d.heures && (d.heures + ' heures'), d.jours && (d.jours + (+d.jours > 1 ? ' jours' : ' jour'))].filter(Boolean).join(' — ');
+    let part = '';
+    if (d.partMin && d.partMax) part = d.partMin + ' à ' + d.partMax + ' personnes';
+    else if (d.partMax) part = 'Jusqu\'à ' + d.partMax + ' personnes';
+    else if (d.partMin) part = 'Minimum ' + d.partMin + ' personnes';
+
+    const meta = [
+      ['Durée', duree], ['Modalité', d.modalite], ['Format', (d.format || []).join(', ')],
+      ['Lieu', d.lieu], ['Participants', part], ['Tarif', d.tarif]
+    ].filter(x => x[1]).map(x => '<div><span>'+x[0]+'</span>'+esc(x[1])+'</div>').join('');
+
+    const seqs = d.sequences.map((s, i) =>
+      '<div class="d-seq"><div class="d-seq-title">'+ esc(s.titre || ('Séquence ' + (i+1)))
+      + (s.duree ? '<em>'+esc(s.duree)+'</em>' : '') + '</div>' + ul(lines(s.contenu)) + '</div>'
+    ).join('');
+
+    let prereq = para(d.prerequis);
+    if ((d.positionnement || []).length) prereq += '<p>Un questionnaire de positionnement est proposé avant l\'entrée en formation.</p>';
+
+    const methodes = ul(d.methodes || []);
+    const evals = ul(d.evaluation || []) + para(d.evalDetail);
+    const acces = para(d.accessibilite) + (d.referent ? '<p><strong>Référent handicap :</strong> '+esc(d.referent)+'</p>' : '');
+
+    const topLeft = d.organisme ? '<strong>'+esc(d.organisme)+'</strong>' + (d.nda ? '<br>NDA : '+esc(d.nda) : '') : (d.nda ? 'NDA : '+esc(d.nda) : '');
+    const topRight = 'Programme de formation' + (d.reference ? '<br>Réf. '+esc(d.reference) : '');
+
+    const credit = (d.credit || []).length
+      ? '<span>Programme établi avec le générateur gratuit de <a href="'+SITE+'">Répertoire Formations</a></span>' : '';
+
+    return '<div class="d-top"><div>'+topLeft+'</div><div style="text-align:right">'+topRight+'</div></div>'
+      + '<h1>'+esc(d.titre || 'Intitulé de la formation')+'</h1>'
+      + (d.accroche ? '<p class="d-accroche">'+esc(d.accroche)+'</p>' : '')
+      + (meta ? '<div class="d-meta">'+meta+'</div>' : '')
+      + block('Objectifs pédagogiques', d.objectifs.length ? '<p>À l\'issue de la formation, le stagiaire sera capable de :</p>'+ul(d.objectifs) : '')
+      + block('Public visé', para(d.public))
+      + block('Prérequis', prereq)
+      + block('Contenu de la formation', seqs)
+      + block('Méthodes pédagogiques', methodes)
+      + block('Moyens techniques et supports', para(d.moyens))
+      + block('Encadrement', para(d.encadrement))
+      + block('Modalités d\'évaluation', evals)
+      + block('Sanction de la formation', d.sanction ? '<p>'+esc(d.sanction)+'</p>' : '')
+      + block('Modalités et délai d\'accès', para(d.delai))
+      + block('Accessibilité', acces)
+      + block('Contact et inscription', para(d.contact))
+      + '<div class="d-foot"><span>'+(d.maj ? 'Mis à jour le '+esc(fmtDate(d.maj)) : '')+'</span>'+credit+'</div>';
+  }
+
+  /* ---------- Points de vigilance ---------- */
+  function checks(d){
+    const out = [];
+    const add = (ok, txt) => out.push('<li class="'+(ok?'ok':'ko')+'">'+txt+'</li>');
+    add(!!d.titre, 'Intitulé renseigné');
+    add(d.objectifs.length > 0, 'Au moins un objectif pédagogique');
+    const vagues = d.objectifs.filter(o => VAGUE.test(o)).length;
+    if (d.objectifs.length) add(!vagues, vagues ? vagues+' objectif(s) avec un verbe peu observable' : 'Objectifs formulés avec des verbes d\'action');
+    add(!!d.public && !!d.prerequis, 'Public visé et prérequis');
+    add(!!d.heures && !!d.modalite, 'Durée et modalité');
+    add(!!d.delai, 'Délai d\'accès');
+    add((d.evaluation || []).length > 0, 'Modalités d\'évaluation');
+    add(!!d.accessibilite, 'Accessibilité handicap');
+    const total = d.sequences.reduce((t, s) => t + parseH(s.duree), 0);
+    if (total && d.heures) {
+      const diff = Math.abs(total - parseFloat(d.heures)) < 0.01;
+      add(diff, diff ? 'Durée des séquences cohérente ('+fmtH(total)+')' : 'Séquences : '+fmtH(total)+' pour '+d.heures+' h déclarées');
+    }
+    $('#checklist').innerHTML = '<h2>Points de vigilance (indicateur 1 Qualiopi)</h2><ul>'+out.join('')+'</ul>';
+  }
+
+  /* ---------- Mise à jour ---------- */
+  let saveTimer;
+  function update(){
+    $$('.obj').forEach(i => {
+      const hint = i.parentElement.querySelector('.hint');
+      hint.textContent = VAGUE.test(i.value.trim()) ? 'Verbe peu mesurable : préférez identifier, rédiger, appliquer, concevoir, analyser…' : '';
+    });
+    const d = collect();
+    $('#preview').innerHTML = render(d);
+    checks(d);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify(d)); } catch(e){} }, 400);
+  }
+
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function download(name, content, type){
+    const url = URL.createObjectURL(new Blob([content], {type: type + ';charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  /* ---------- Exemple ---------- */
+  const EXEMPLE = {
+    titre: 'Concevoir et animer une formation à distance',
+    accroche: 'Transformez vos formations présentielles en classes virtuelles engageantes.',
+    organisme: 'Mon Organisme de Formation', nda: '', reference: 'FOR-DIST-01',
+    maj: new Date().toISOString().slice(0,10),
+    public: 'Formateurs, consultants et responsables pédagogiques souhaitant animer en distanciel.',
+    prerequis: 'Avoir déjà animé une formation en présentiel.\nDisposer d\'un ordinateur avec webcam et micro.',
+    positionnement: ['1'], partMin: '4', partMax: '10',
+    objectifs: [
+      'Scénariser une séquence de formation adaptée au distanciel',
+      'Choisir les outils numériques adaptés à chaque activité',
+      'Animer une classe virtuelle en maintenant l\'engagement des participants',
+      'Évaluer les acquis des stagiaires à distance'
+    ],
+    heures: '14', jours: '2', modalite: 'Distanciel (classe virtuelle)', format: ['Inter-entreprises','Intra-entreprise'],
+    lieu: 'À distance', tarif: '890 € HT / personne',
+    delai: 'Inscription possible jusqu\'à 10 jours ouvrés avant le début de la session.',
+    sequences: [
+      {titre:'Les spécificités de l\'apprentissage à distance', duree:'3h30', contenu:'Synchrone, asynchrone, hybride\nAttention et charge cognitive en ligne\nLes erreurs fréquentes'},
+      {titre:'Scénariser une classe virtuelle', duree:'3h30', contenu:'Découper un contenu en séquences courtes\nAlterner apports et activités\nAtelier : scénariser une séquence de 45 minutes'},
+      {titre:'Les outils de l\'animation', duree:'3h30', contenu:'Tableau blanc, sondages, sous-groupes\nPrise en main guidée\nGérer les incidents techniques'},
+      {titre:'Animer et évaluer', duree:'3h30', contenu:'Mise en situation filmée et débriefée\nQuiz et évaluation des acquis à distance\nPlan d\'action individuel'}
+    ],
+    methodes: ['Apports théoriques','Exercices pratiques','Mises en situation','Échanges d\'expériences'],
+    moyens: 'Classe virtuelle, tableau blanc collaboratif, support PDF et fiches outils remis à chaque stagiaire.',
+    encadrement: 'Formateur consultant spécialisé en ingénierie pédagogique digitale.',
+    evaluation: ['Évaluation des acquis en amont (positionnement)','Évaluation des acquis en fin de formation (QCM, mise en situation)','Questionnaire de satisfaction à chaud'],
+    evalDetail: '', sanction: 'Attestation de fin de formation',
+    accessibilite: 'Formation accessible aux personnes en situation de handicap. Contactez notre référent handicap pour étudier ensemble les adaptations nécessaires.',
+    referent: '', contact: '', credit: ['1']
+  };
+
+  /* ---------- Événements ---------- */
+  $('#form').addEventListener('input', update);
+  $('#form').addEventListener('change', update);
+  $('#form').addEventListener('click', e => {
+    const del = e.target.closest('[data-del]');
+    if (!del) return;
+    const item = del.closest('.row-item, .seq');
+    const list = item.parentElement;
+    item.remove();
+    if (!list.children.length) (list.id === 'objectifs' ? addObjectif() : addSequence());
+    update();
+  });
+  $('#addObj').addEventListener('click', () => { addObjectif().querySelector('input').focus(); update(); });
+  $('#addSeq').addEventListener('click', () => { addSequence().querySelector('input').focus(); update(); });
+
+  $('#btnPrint').addEventListener('click', () => window.print());
+  $('#btnHtml').addEventListener('click', () => {
+    const d = collect();
+    const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+      + '<title>'+esc(d.titre || 'Programme de formation')+'</title><style>body{margin:0;padding:20px;background:#fff}'
+      + $('#doc-css').textContent + '</style></head><body><article class="doc">' + $('#preview').innerHTML + '</article></body></html>';
+    download(slug(d.titre) + '.html', html, 'text/html');
+    toast('Programme téléchargé');
+  });
+  $('#btnSave').addEventListener('click', () => {
+    const d = collect();
+    download(slug(d.titre) + '.json', JSON.stringify(d, null, 2), 'application/json');
+    toast('Fichier enregistré');
+  });
+  $('#btnOpen').addEventListener('click', () => $('#fileOpen').click());
+  $('#fileOpen').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try { fill(JSON.parse(r.result)); toast('Programme chargé'); }
+      catch(err){ toast('Fichier illisible'); }
+    };
+    r.readAsText(file);
+    e.target.value = '';
+  });
+  $('#btnExample').addEventListener('click', () => {
+    if (collect().titre && !confirm('Remplacer le contenu actuel par l\'exemple ?')) return;
+    fill(EXEMPLE); toast('Exemple chargé');
+  });
+  $('#btnReset').addEventListener('click', () => {
+    if (!confirm('Effacer tout le programme ?')) return;
+    try { localStorage.removeItem(STORE); } catch(e){}
+    fill({maj: new Date().toISOString().slice(0,10), credit:['1'],
+          accessibilite: $('#accessibilite').defaultValue});
+  });
+
+  /* ---------- Démarrage ---------- */
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch(e){}
+  if (saved) fill(saved);
+  else { addObjectif(); addSequence(); $('#maj').value = new Date().toISOString().slice(0,10); update(); }
+})();
+</script>
+</body>
+</html>
