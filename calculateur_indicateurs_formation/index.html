@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur d'indicateurs de formation gratuit | Répertoire Formations</title>
+<meta name="description" content="Calculez gratuitement vos indicateurs de résultats de formation : taux de satisfaction, d'abandon, de réussite, d'assiduité et de recommandation (NPS). Graphiques, export PDF/CSV et code à publier sur votre site (Qualiopi indicateur 2).">
+<meta property="og:title" content="Calculateur d'indicateurs de formation gratuit">
+<meta property="og:description" content="Satisfaction, abandon, réussite, assiduité, recommandation : vos indicateurs en graphiques, prêts à publier.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --primary:#1e5aa8; --primary-dark:#163f78; --accent:#f0a020;
+    --bg:#f3f5f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+    --border:#d8dee8; --warn-bg:#fff7e6; --warn:#9a5b00; --ok:#1b7f4b; --danger:#b42318;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+  a{color:var(--primary)}
+  .wrap{max-width:1400px;margin:0 auto}
+  .topbar{background:var(--primary);color:#fff;padding:14px 16px}
+  .topbar .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:240px}
+  .topbar h1{font-size:1.25rem;margin:0}
+  .topbar p{margin:0;opacity:.85;font-size:.9rem}
+  .topbar a.top-link{color:#fff;font-weight:600;font-size:.9rem;text-decoration:none;border:1px solid rgba(255,255,255,.5);padding:6px 12px;border-radius:999px}
+  .toolbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);padding:10px 16px}
+  .toolbar .wrap{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;color:var(--text);padding:8px 12px;border-radius:8px;font-size:.9rem;cursor:pointer;font-family:inherit}
+  .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.primary:hover{background:var(--primary-dark);color:#fff}
+  .btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+  .btn svg{width:16px;height:16px}
+  .layout{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px;padding:20px 16px}
+  @media (max-width:1050px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+  .card h2{font-size:1.05rem;margin:0 0 6px;color:var(--primary-dark);display:flex;align-items:center;gap:8px}
+  .card h2 .num{background:var(--primary);color:#fff;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;flex:none}
+  label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 4px}
+  label .opt{font-weight:400;color:var(--muted)}
+  input[type=text],input[type=number]{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font:inherit;background:#fff;color:var(--text)}
+  input:focus{outline:2px solid rgba(30,90,168,.25);border-color:var(--primary)}
+  input.invalid{border-color:var(--danger);background:#fff5f5}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 12px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:0 10px}
+  @media (max-width:560px){.grid2,.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}}
+  .help{font-size:.8rem;color:var(--muted);margin:2px 0 0}
+  .errors{background:#fff5f5;border:1px solid #f3c1bd;color:var(--danger);border-radius:var(--radius);padding:10px 14px;font-size:.88rem;margin-bottom:16px}
+  .errors:empty{display:none}
+  .errors ul{margin:0;padding-left:18px}
+  details.objectifs summary{cursor:pointer;font-weight:600;color:var(--primary-dark)}
+  .embed textarea{width:100%;font-family:ui-monospace,Consolas,monospace;font-size:.78rem;border:1px solid var(--border);border-radius:7px;padding:8px;height:120px;resize:vertical}
+  .embed .demo{border:1px dashed var(--border);border-radius:8px;padding:10px;margin:10px 0;background:#fafbfd}
+  .report-col{align-self:start}
+  .cta{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--radius);padding:22px;margin:0 16px 24px}
+  .cta .wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .cta h2{margin:0 0 6px;font-size:1.2rem}
+  .cta p{margin:0;opacity:.9}
+  .cta .txt{flex:1;min-width:260px}
+  .cta a.btn-cta{background:var(--accent);color:#1f2937;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:8px;display:inline-block}
+  .cta a.btn-sec{color:#fff;font-size:.9rem;display:inline-block;margin-top:8px}
+  footer.site{text-align:center;font-size:.85rem;color:var(--muted);padding:0 16px 30px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+</style>
+
+<!-- Styles du rapport (réutilisés pour l'export HTML) -->
+<style id="rep-css">
+  .rep{background:#fff;color:#1f2937;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;border:1px solid #d8dee8;border-radius:10px;padding:28px 30px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rep .r-top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:2px solid #1e5aa8;padding-bottom:10px;margin-bottom:18px}
+  .rep h1{font-size:21px;color:#163f78;margin:0;line-height:1.25}
+  .rep .r-sub{color:#6b7280;font-size:13px;margin-top:2px}
+  .rep .r-right{text-align:right;font-size:12px;color:#6b7280}
+  .rep .r-right strong{color:#1f2937;font-size:13px}
+  .rep .r-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+  @media (max-width:760px){.rep .r-tiles{grid-template-columns:repeat(2,1fr)}}
+  .rep .tile{border:1px solid #e3e8f0;border-radius:10px;padding:12px 8px;text-align:center;break-inside:avoid}
+  .rep .tile svg{width:86px;height:86px;display:block;margin:0 auto}
+  .rep .tile .t-lab{font-size:12px;font-weight:600;margin-top:6px;line-height:1.3}
+  .rep .tile .t-det{font-size:11px;color:#6b7280}
+  .rep .tag{display:inline-block;font-size:10.5px;font-weight:600;border-radius:999px;padding:1px 8px;margin-top:5px}
+  .rep .tag.ok{background:#e6f4ec;color:#1b7f4b}
+  .rep .tag.ko{background:#fff1e0;color:#9a5b00}
+  .rep h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#1e5aa8;border-bottom:1px solid #d8dee8;padding-bottom:4px;margin:0 0 10px}
+  .rep .r-block{margin-bottom:22px;break-inside:avoid}
+  .rep .bars .b-row{display:grid;grid-template-columns:170px 1fr 58px;gap:10px;align-items:center;margin-bottom:9px;font-size:13px}
+  .rep .bars .b-track{position:relative;height:16px;background:#eef2f7;border-radius:4px}
+  .rep .bars .b-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#1e5aa8}
+  .rep .bars .b-fill.alt{background:#c2410c}
+  .rep .bars .b-goal{position:absolute;top:-3px;bottom:-3px;width:2px;background:#1f2937}
+  .rep .bars .b-val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+  .rep .legend{font-size:11.5px;color:#6b7280;margin-top:4px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .rep .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  .rep .stack{display:flex;height:26px;border-radius:5px;overflow:hidden;background:#eef2f7}
+  .rep .stack div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden}
+  .rep table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .rep th,.rep td{border-bottom:1px solid #e3e8f0;padding:6px 8px;text-align:left}
+  .rep th{background:#f3f6fb;font-weight:600;color:#374151}
+  .rep td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .rep .r-empty{color:#9ca3af;font-style:italic;text-align:center;padding:60px 0}
+  .rep .r-foot{margin-top:18px;padding-top:10px;border-top:1px solid #d8dee8;font-size:11px;color:#6b7280;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .rep .r-foot a{color:#6b7280}
+  @media (max-width:560px){.rep{padding:18px 14px}.rep .bars .b-row{grid-template-columns:110px 1fr 50px}}
+  @media print{
+    @page{size:A4;margin:12mm}
+    .rep{border:none;border-radius:0;padding:0}
+    .rep a{text-decoration:none}
+  }
+</style>
+<style>
+  @media print{
+    body{background:#fff}
+    .no-print{display:none !important}
+    .layout{display:block;padding:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+      <div>
+        <h1>Calculateur d'indicateurs de formation</h1>
+        <p>Gratuit, sans inscription, vos données restent dans votre navigateur.</p>
+      </div>
+    </div>
+    <a class="top-link" href="https://www.repertoire-formations.fr/pages/repertoire-formations/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=calculateur-indicateurs" target="_blank" rel="noopener">Répertoire Formations ↗</a>
+  </div>
+</header>
+
+<nav class="toolbar no-print">
+  <div class="wrap">
+    <button class="btn primary" type="button" id="btnPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimer / PDF</button>
+    <button class="btn" type="button" id="btnCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV</button>
+    <button class="btn" type="button" id="btnHtml">Rapport HTML</button>
+    <button class="btn" type="button" id="btnSave">Enregistrer (.json)</button>
+    <button class="btn" type="button" id="btnOpen">Ouvrir…</button>
+    <input type="file" id="fileOpen" accept="application/json,.json" hidden>
+    <button class="btn" type="button" id="btnExample">Charger un exemple</button>
+    <button class="btn danger" type="button" id="btnReset">Tout effacer</button>
+  </div>
+</nav>
+
+<main class="layout wrap">
+  <!-- ============ SAISIE ============ -->
+  <form id="form" class="no-print" autocomplete="off" onsubmit="return false">
+    <div class="errors" id="errors"></div>
+
+    <div class="card">
+      <h2><span class="num">1</span>Périmètre</h2>
+      <label for="titre">Formation ou périmètre</label>
+      <input type="text" id="titre" name="titre" placeholder="Ex. : Toutes formations / Management d'équipe">
+      <div class="grid2">
+        <div><label for="organisme">Organisme</label><input type="text" id="organisme" name="organisme"></div>
+        <div><label for="periode">Période</label><input type="text" id="periode" name="periode" placeholder="Ex. : Année 2025"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span>Effectifs et abandons</h2>
+      <div class="grid3">
+        <div><label for="inscrits">Inscrits</label><input type="number" min="0" id="inscrits" name="inscrits"></div>
+        <div><label for="entres">Entrés en formation</label><input type="number" min="0" id="entres" name="entres"></div>
+        <div><label for="abandons">Abandons</label><input type="number" min="0" id="abandons" name="abandons"></div>
+      </div>
+      <p class="help">Taux d'abandon = abandons ÷ stagiaires entrés en formation.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span>Assiduité</h2>
+      <div class="grid2">
+        <div><label for="hPrevues">Heures prévues par stagiaire</label><input type="number" min="0" step="0.5" id="hPrevues" name="hPrevues"></div>
+        <div><label for="hRealisees">Total d'heures suivies <span class="opt">(tous stagiaires)</span></label><input type="number" min="0" step="0.5" id="hRealisees" name="hRealisees"></div>
+      </div>
+      <p class="help">Taux d'assiduité = heures suivies ÷ (heures prévues × stagiaires entrés).</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">4</span>Réussite</h2>
+      <div class="grid2">
+        <div><label for="presentes">Présentés à l'évaluation finale</label><input type="number" min="0" id="presentes" name="presentes"></div>
+        <div><label for="reussis">Ayant validé / réussi</label><input type="number" min="0" id="reussis" name="reussis"></div>
+      </div>
+      <p class="help">Taux de réussite = réussis ÷ présentés (le taux sur les entrés est aussi calculé).</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">5</span>Satisfaction</h2>
+      <p class="help">Nombre de réponses à la question de satisfaction globale.</p>
+      <div class="grid4">
+        <div><label for="sTres">Très satisfaits</label><input type="number" min="0" id="sTres" name="sTres"></div>
+        <div><label for="sSat">Satisfaits</label><input type="number" min="0" id="sSat" name="sSat"></div>
+        <div><label for="sPeu">Peu satisfaits</label><input type="number" min="0" id="sPeu" name="sPeu"></div>
+        <div><label for="sPas">Pas satisfaits</label><input type="number" min="0" id="sPas" name="sPas"></div>
+      </div>
+      <p class="help">Taux de satisfaction = (très satisfaits + satisfaits) ÷ réponses.</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">6</span>Recommandation</h2>
+      <p class="help">Question « Recommanderiez-vous cette formation ? » notée de 0 à 10. Avec une simple réponse oui/non, mettez les « oui » en promoteurs et les « non » en détracteurs.</p>
+      <div class="grid3">
+        <div><label for="rProm">Promoteurs <span class="opt">(9–10)</span></label><input type="number" min="0" id="rProm" name="rProm"></div>
+        <div><label for="rPass">Passifs <span class="opt">(7–8)</span></label><input type="number" min="0" id="rPass" name="rPass"></div>
+        <div><label for="rDet">Détracteurs <span class="opt">(0–6)</span></label><input type="number" min="0" id="rDet" name="rDet"></div>
+      </div>
+      <p class="help">Taux de recommandation = promoteurs ÷ réponses. NPS = % promoteurs − % détracteurs.</p>
+    </div>
+
+    <div class="card">
+      <details class="objectifs">
+        <summary>Objectifs à atteindre (facultatif)</summary>
+        <div class="grid3">
+          <div><label for="oSat">Satisfaction ≥ (%)</label><input type="number" min="0" max="100" id="oSat" name="oSat" value="90"></div>
+          <div><label for="oAband">Abandon ≤ (%)</label><input type="number" min="0" max="100" id="oAband" name="oAband" value="10"></div>
+          <div><label for="oReus">Réussite ≥ (%)</label><input type="number" min="0" max="100" id="oReus" name="oReus" value="85"></div>
+          <div><label for="oAssid">Assiduité ≥ (%)</label><input type="number" min="0" max="100" id="oAssid" name="oAssid" value="95"></div>
+          <div><label for="oReco">Recommandation ≥ (%)</label><input type="number" min="0" max="100" id="oReco" name="oReco" value="70"></div>
+        </div>
+        <p class="help">Laissez un champ vide pour ne pas afficher d'objectif.</p>
+      </details>
+    </div>
+
+    <div class="card embed">
+      <h2>Publier vos résultats sur votre site</h2>
+      <p class="help">Qualiopi (indicateur 2) demande de rendre publics vos indicateurs de résultats. Copiez ce code dans une page de votre site.</p>
+      <div class="demo" id="embedDemo"></div>
+      <textarea id="embedCode" readonly></textarea>
+      <button type="button" class="btn" id="btnCopy" style="margin-top:8px">Copier le code</button>
+    </div>
+  </form>
+
+  <!-- ============ RAPPORT ============ -->
+  <div class="report-col">
+    <article id="report" class="rep"></article>
+  </div>
+</main>
+
+<section class="cta no-print">
+  <div class="wrap">
+    <div class="txt">
+      <h2>Valorisez vos résultats auprès des futurs stagiaires</h2>
+      <p>Référencez gratuitement votre organisme sur Répertoire Formations et gérez votre fiche en ligne.</p>
+    </div>
+    <div>
+      <a class="btn-cta" href="https://www.repertoire-formations.fr/pages/membres/inscription.php?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=calculateur-indicateurs" target="_blank" rel="noopener">Créer mon compte gratuit</a><br>
+      <a class="btn-sec" href="https://www.repertoire-formations.fr/pages/repertoire-formations/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=calculateur-indicateurs" target="_blank" rel="noopener">Consulter le répertoire →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site no-print">
+  Outil libre proposé par <a href="https://www.repertoire-formations.fr/?utm_source=github&amp;utm_medium=outil&amp;utm_campaign=calculateur-indicateurs" target="_blank" rel="noopener">Répertoire Formations</a> — aucune donnée n'est envoyée : tout reste dans votre navigateur.
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+  const STORE = 'rf-calculateur-indicateurs-v1';
+  const SITE = 'https://www.repertoire-formations.fr/?utm_source=github&utm_medium=rapport&utm_campaign=calculateur-indicateurs';
+  const SITE_EMBED = 'https://www.repertoire-formations.fr/?utm_source=embed&utm_medium=indicateurs&utm_campaign=calculateur-indicateurs';
+  const C = {primary:'#1e5aa8', alt:'#c2410c', track:'#eef2f7', s1:'#1b7f4b', s2:'#5fae7f', s3:'#e0a43a', s4:'#c2410c', p:'#1b7f4b', n:'#9ca3af', d:'#c2410c'};
+
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : null; };
+  const pct = (a, b) => (a === null || b === null || b <= 0) ? null : a / b * 100;
+  const fmt = v => v === null ? '—' : v.toLocaleString('fr-FR', {maximumFractionDigits:1}) + ' %';
+  const fmtN = v => v === null ? '—' : v.toLocaleString('fr-FR', {maximumFractionDigits:1});
+  const sum = arr => { const v = arr.filter(x => x !== null); return v.length ? v.reduce((a, b) => a + b, 0) : null; };
+
+  /* ---------- Lecture / écriture ---------- */
+  function raw(){
+    const d = {};
+    $$('#form [name]').forEach(el => d[el.name] = el.value.trim());
+    return d;
+  }
+  function fill(d){
+    $('#form').reset();
+    $$('#form [name]').forEach(el => { if (d[el.name] !== undefined) el.value = d[el.name]; });
+    update();
+  }
+
+  /* ---------- Calculs ---------- */
+  function compute(r){
+    const g = k => num(r[k]);
+    const entres = g('entres'), abandons = g('abandons'), presentes = g('presentes'), reussis = g('reussis');
+    const hP = g('hPrevues'), hR = g('hRealisees');
+    const sat = [g('sTres'), g('sSat'), g('sPeu'), g('sPas')];
+    const satRep = sum(sat);
+    const reco = [g('rProm'), g('rPass'), g('rDet')];
+    const recoRep = sum(reco);
+    const heuresDues = (hP !== null && entres !== null) ? hP * entres : null;
+
+    const ind = {
+      satisfaction: {lab:'Taux de satisfaction', val: pct(sum([sat[0], sat[1]]), satRep), numr: sum([sat[0], sat[1]]), den: satRep, denLab:'réponses', goal: num(r.oSat), dir:1},
+      abandon:      {lab:'Taux d\'abandon', val: pct(abandons, entres), numr: abandons, den: entres, denLab:'entrés', goal: num(r.oAband), dir:-1},
+      reussite:     {lab:'Taux de réussite', val: pct(reussis, presentes), numr: reussis, den: presentes, denLab:'présentés', goal: num(r.oReus), dir:1},
+      assiduite:    {lab:'Taux d\'assiduité', val: pct(hR, heuresDues), numr: hR, den: heuresDues, denLab:'heures dues', goal: num(r.oAssid), dir:1},
+      recommandation:{lab:'Taux de recommandation', val: pct(reco[0], recoRep), numr: reco[0], den: recoRep, denLab:'réponses', goal: num(r.oReco), dir:1}
+    };
+    Object.values(ind).forEach(i => {
+      if (i.val !== null) i.val = Math.min(i.val, 100);
+      i.ok = (i.val === null || i.goal === null) ? null : (i.dir > 0 ? i.val >= i.goal : i.val <= i.goal);
+    });
+    const extra = {
+      reussiteEntres: pct(reussis, entres),
+      tauxReponseSat: pct(satRep, entres),
+      tauxReponseReco: pct(recoRep, entres),
+      nps: recoRep ? Math.round(pct(reco[0] || 0, recoRep) - pct(reco[2] || 0, recoRep)) : null,
+      tauxEntree: pct(entres, g('inscrits')),
+      sat, satRep, reco, recoRep
+    };
+
+    const errors = [];
+    const bad = [];
+    if (entres !== null && g('inscrits') !== null && entres > g('inscrits')) { errors.push('Plus d\'entrés que d\'inscrits.'); bad.push('entres'); }
+    if (abandons !== null && entres !== null && abandons > entres) { errors.push('Plus d\'abandons que de stagiaires entrés.'); bad.push('abandons'); }
+    if (reussis !== null && presentes !== null && reussis > presentes) { errors.push('Plus de réussis que de présentés.'); bad.push('reussis'); }
+    if (presentes !== null && entres !== null && presentes > entres) { errors.push('Plus de présentés que de stagiaires entrés.'); bad.push('presentes'); }
+    if (hR !== null && heuresDues !== null && hR > heuresDues) { errors.push('Heures suivies supérieures aux heures dues (taux plafonné à 100 %).'); bad.push('hRealisees'); }
+    if (satRep !== null && entres !== null && satRep > entres) errors.push('Plus de réponses de satisfaction que de stagiaires entrés : vérifiez vos chiffres.');
+    if (recoRep !== null && entres !== null && recoRep > entres) errors.push('Plus de réponses de recommandation que de stagiaires entrés : vérifiez vos chiffres.');
+    return {ind, extra, errors, bad, entres};
+  }
+
+  /* ---------- Graphiques SVG ---------- */
+  function gauge(i){
+    const r = 36, c = 2 * Math.PI * r;
+    const v = i.val === null ? 0 : i.val;
+    const color = i.dir < 0 ? C.alt : C.primary;
+    return '<svg viewBox="0 0 90 90" role="img" aria-label="'+esc(i.lab)+' '+fmt(i.val)+'">'
+      + '<circle cx="45" cy="45" r="'+r+'" fill="none" stroke="'+C.track+'" stroke-width="9"/>'
+      + (i.val === null ? '' : '<circle cx="45" cy="45" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+(c * v / 100).toFixed(2)+' '+c.toFixed(2)+'" transform="rotate(-90 45 45)"/>')
+      + '<text x="45" y="50" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937" font-family="system-ui,Arial,sans-serif">'+(i.val === null ? '—' : Math.round(i.val) + '%')+'</text></svg>';
+  }
+  const tag = i => i.ok === null ? '' : '<span class="tag '+(i.ok ? 'ok' : 'ko')+'">'+(i.ok ? 'Objectif atteint' : 'Sous l\'objectif')+'</span>';
+  function stack(parts){
+    const total = parts.reduce((a, p) => a + (p.v || 0), 0);
+    if (!total) return '';
+    return '<div class="stack">' + parts.filter(p => p.v).map(p => {
+      const w = p.v / total * 100;
+      return '<div style="width:'+w.toFixed(2)+'%;background:'+p.c+'" title="'+esc(p.l)+' : '+p.v+'">'+(w >= 8 ? Math.round(w) + '%' : '')+'</div>';
+    }).join('') + '</div><div class="legend">' + parts.map(p => '<span><i style="background:'+p.c+'"></i>'+esc(p.l)+' ('+(p.v || 0)+')</span>').join('') + '</div>';
+  }
+
+  /* ---------- Rapport ---------- */
+  function render(r, res){
+    const list = Object.values(res.ind);
+    if (list.every(i => i.val === null)) {
+      return '<div class="r-empty">Saisissez vos chiffres : les indicateurs et graphiques apparaissent ici.</div>';
+    }
+    const tiles = list.map(i => '<div class="tile">'+gauge(i)+'<div class="t-lab">'+i.lab+'</div>'
+      + '<div class="t-det">'+(i.den ? fmtN(i.numr)+' / '+fmtN(i.den)+' '+i.denLab : 'non renseigné')+'</div>'+tag(i)+'</div>').join('');
+
+    const bars = list.filter(i => i.val !== null).map(i =>
+      '<div class="b-row"><span>'+i.lab+'</span><div class="b-track"><div class="b-fill'+(i.dir < 0 ? ' alt' : '')+'" style="width:'+i.val.toFixed(2)+'%"></div>'
+      + (i.goal !== null ? '<div class="b-goal" style="left:calc('+Math.min(i.goal,100)+'% - 1px)" title="Objectif '+i.goal+' %"></div>' : '')
+      + '</div><span class="b-val">'+fmt(i.val)+'</span></div>').join('');
+    const hasGoal = list.some(i => i.val !== null && i.goal !== null);
+    const barsLegend = '<div class="legend"><span><i style="background:'+C.primary+'"></i>Plus haut = mieux</span><span><i style="background:'+C.alt+'"></i>Plus bas = mieux</span>'
+      + (hasGoal ? '<span><i style="background:#1f2937;width:2px"></i>Objectif</span>' : '') + '</div>';
+
+    const e = res.extra;
+    const satStack = stack([{l:'Très satisfaits', v:e.sat[0], c:C.s1}, {l:'Satisfaits', v:e.sat[1], c:C.s2}, {l:'Peu satisfaits', v:e.sat[2], c:C.s3}, {l:'Pas satisfaits', v:e.sat[3], c:C.s4}]);
+    const recoStack = stack([{l:'Promoteurs', v:e.reco[0], c:C.p}, {l:'Passifs', v:e.reco[1], c:C.n}, {l:'Détracteurs', v:e.reco[2], c:C.d}]);
+
+    const rows = [
+      ...list.map(i => [i.lab, i.den ? fmtN(i.numr)+' / '+fmtN(i.den)+' '+i.denLab : '—', fmt(i.val), i.goal === null ? '—' : (i.dir < 0 ? '≤ ' : '≥ ') + i.goal + ' %']),
+      ['Taux de réussite sur entrés', '', fmt(e.reussiteEntres), '—'],
+      ['Taux d\'entrée en formation', '', fmt(e.tauxEntree), '—'],
+      ['Taux de réponse satisfaction', '', fmt(e.tauxReponseSat), '—'],
+      ['Net Promoter Score (NPS)', '', e.nps === null ? '—' : (e.nps > 0 ? '+' : '') + e.nps, '—']
+    ].map(x => '<tr><td>'+x[0]+'</td><td>'+x[1]+'</td><td class="n">'+x[2]+'</td><td class="n">'+x[3]+'</td></tr>').join('');
+
+    const right = r.organisme ? '<strong>'+esc(r.organisme)+'</strong>' : '';
+    return '<div class="r-top"><div><h1>Indicateurs de résultats'+(r.titre ? ' — '+esc(r.titre) : '')+'</h1>'
+      + '<div class="r-sub">'+(r.periode ? esc(r.periode) : '')+(res.entres !== null ? (r.periode ? ' · ' : '') + fmtN(res.entres) + ' stagiaire(s) entré(s) en formation' : '')+'</div></div>'
+      + '<div class="r-right">'+right+'</div></div>'
+      + '<div class="r-tiles">'+tiles+'</div>'
+      + (bars ? '<section class="r-block"><h3>Vue d\'ensemble</h3><div class="bars">'+bars+'</div>'+barsLegend+'</section>' : '')
+      + (satStack ? '<section class="r-block"><h3>Répartition de la satisfaction</h3>'+satStack+'</section>' : '')
+      + (recoStack ? '<section class="r-block"><h3>Recommandation'+(e.nps !== null ? ' — NPS '+(e.nps > 0 ? '+' : '')+e.nps : '')+'</h3>'+recoStack+'</section>' : '')
+      + '<section class="r-block"><h3>Détail des calculs</h3><table><thead><tr><th>Indicateur</th><th>Base de calcul</th><th style="text-align:right">Résultat</th><th style="text-align:right">Objectif</th></tr></thead><tbody>'+rows+'</tbody></table></section>'
+      + '<div class="r-foot"><span>Édité le '+new Date().toLocaleDateString('fr-FR', {day:'numeric', month:'long', year:'numeric'})+'</span>'
+      + '<span>Calculé avec le calculateur gratuit de <a href="'+SITE+'">Répertoire Formations</a></span></div>';
+  }
+
+  /* ---------- Code à intégrer ---------- */
+  function embed(r, res){
+    const items = Object.values(res.ind).filter(i => i.val !== null);
+    if (!items.length) return '';
+    const li = items.map(i => '<li style="margin:4px 0">'+i.lab+' : <strong>'+fmt(i.val)+'</strong>'
+      + (i.den ? ' <span style="color:#6b7280;font-size:12px">('+fmtN(i.den)+' '+i.denLab+')</span>' : '')+'</li>').join('');
+    return '<div style="font-family:Arial,sans-serif;border:1px solid #d8dee8;border-radius:8px;padding:14px 16px;max-width:520px;color:#1f2937">'
+      + '<div style="font-weight:700;color:#163f78;margin-bottom:6px">Nos indicateurs de résultats'+(r.periode ? ' — '+esc(r.periode) : '')+'</div>'
+      + (r.titre ? '<div style="font-size:13px;color:#6b7280;margin-bottom:6px">'+esc(r.titre)+'</div>' : '')
+      + '<ul style="margin:0;padding-left:18px;font-size:14px">'+li+'</ul>'
+      + '<div style="font-size:11px;color:#6b7280;margin-top:8px">Mis à jour le '+new Date().toLocaleDateString('fr-FR')+' · Indicateurs calculés avec <a href="'+SITE_EMBED+'" style="color:#6b7280">Répertoire Formations</a></div></div>';
+  }
+
+  /* ---------- Mise à jour ---------- */
+  let saveTimer, last;
+  function update(){
+    const r = raw();
+    const res = compute(r);
+    last = {r, res};
+    $$('#form input').forEach(el => el.classList.toggle('invalid', res.bad.includes(el.name)));
+    $('#errors').innerHTML = res.errors.length ? '<ul>'+res.errors.map(e => '<li>'+e+'</li>').join('')+'</ul>' : '';
+    $('#report').innerHTML = render(r, res);
+    const code = embed(r, res);
+    $('#embedCode').value = code;
+    $('#embedDemo').innerHTML = code || '<span class="help">Le bloc apparaîtra dès que vous aurez saisi des chiffres.</span>';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify(r)); } catch(e){} }, 400);
+  }
+
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  function download(name, content, type){
+    const url = URL.createObjectURL(new Blob([content], {type: type + ';charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  const slug = s => (s || 'indicateurs-formation').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'indicateurs-formation';
+  const baseName = () => 'indicateurs-' + slug([last.r.titre, last.r.periode].filter(Boolean).join(' '));
+
+  /* ---------- Exemple ---------- */
+  const EXEMPLE = {
+    titre:'Toutes formations', organisme:'Mon Organisme de Formation', periode:'Année 2025',
+    inscrits:'142', entres:'136', abandons:'6',
+    hPrevues:'21', hRealisees:'2730',
+    presentes:'128', reussis:'117',
+    sTres:'71', sSat:'44', sPeu:'7', sPas:'2',
+    rProm:'78', rPass:'33', rDet:'11',
+    oSat:'90', oAband:'10', oReus:'85', oAssid:'95', oReco:'70'
+  };
+
+  /* ---------- Événements ---------- */
+  $('#form').addEventListener('input', update);
+  $('#btnPrint').addEventListener('click', () => window.print());
+  $('#btnCsv').addEventListener('click', () => {
+    const {r, res} = last;
+    const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+    const n = v => v === null ? '' : String(Math.round(v * 10) / 10).replace('.', ',');
+    const lines = [['Indicateur','Numérateur','Dénominateur','Base','Résultat (%)','Objectif (%)','Objectif atteint'].map(q).join(';')];
+    Object.values(res.ind).forEach(i => lines.push([i.lab, n(i.numr), n(i.den), i.denLab, n(i.val), i.goal ?? '', i.ok === null ? '' : (i.ok ? 'oui' : 'non')].map(q).join(';')));
+    const e = res.extra;
+    lines.push(['Taux de réussite sur entrés','','','',n(e.reussiteEntres),'',''].map(q).join(';'));
+    lines.push(['Taux de réponse satisfaction','','','',n(e.tauxReponseSat),'',''].map(q).join(';'));
+    lines.push(['NPS','','','',e.nps ?? '','',''].map(q).join(';'));
+    lines.push('');
+    lines.push([q('Formation'), q(r.titre)].join(';'));
+    lines.push([q('Organisme'), q(r.organisme)].join(';'));
+    lines.push([q('Période'), q(r.periode)].join(';'));
+    download(baseName() + '.csv', '﻿' + lines.join('\r\n'), 'text/csv');
+    toast('CSV téléchargé');
+  });
+  $('#btnHtml').addEventListener('click', () => {
+    const html = '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+      + '<title>Indicateurs de résultats</title><style>body{margin:0;padding:20px;background:#fff}' + $('#rep-css').textContent
+      + '</style></head><body><article class="rep">' + $('#report').innerHTML + '</article></body></html>';
+    download(baseName() + '.html', html, 'text/html');
+    toast('Rapport téléchargé');
+  });
+  $('#btnSave').addEventListener('click', () => { download(baseName() + '.json', JSON.stringify(raw(), null, 2), 'application/json'); toast('Fichier enregistré'); });
+  $('#btnOpen').addEventListener('click', () => $('#fileOpen').click());
+  $('#fileOpen').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const rd = new FileReader();
+    rd.onload = () => { try { fill(JSON.parse(rd.result)); toast('Données chargées'); } catch(err){ toast('Fichier illisible'); } };
+    rd.readAsText(file);
+    e.target.value = '';
+  });
+  $('#btnCopy').addEventListener('click', () => {
+    const ta = $('#embedCode');
+    if (!ta.value) { toast('Saisissez d\'abord vos chiffres'); return; }
+    const done = () => toast('Code copié');
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); document.execCommand('copy'); done(); });
+    else { ta.select(); document.execCommand('copy'); done(); }
+  });
+  $('#btnExample').addEventListener('click', () => {
+    const r = raw();
+    if ((r.entres || r.sTres || r.reussis) && !confirm('Remplacer les chiffres actuels par l\'exemple ?')) return;
+    fill(EXEMPLE); toast('Exemple chargé');
+  });
+  $('#btnReset').addEventListener('click', () => {
+    if (!confirm('Effacer toutes les données ?')) return;
+    try { localStorage.removeItem(STORE); } catch(e){}
+    fill({});
+  });
+
+  /* ---------- Démarrage ---------- */
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch(e){}
+  if (saved) fill(saved); else update();
+})();
+</script>
+</body>
+</html>
