@@ -2,7 +2,7 @@
 
 Outil gratuit et open source pour rédiger en quelques minutes un **programme de formation structuré et imprimable** : objectifs pédagogiques, public visé, prérequis, durée, modalités, contenu, méthodes, évaluation, accessibilité.
 
-👉 **Utiliser l'outil en ligne :** https://https://github.com/citicasarl/generateur-programme-formation/
+👉 **Utiliser l'outil en ligne :** https://github.com/citicasarl/repertoire-formations/tree/Repertoire-Formations/generateur-programme-formation
 
 ## Fonctionnalités
 
